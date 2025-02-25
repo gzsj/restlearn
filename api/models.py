@@ -36,7 +36,7 @@ class Movie(Time):
         db_table = 'movie'
         verbose_name = '电影'
         verbose_name_plural = '电影'
-        ordering = ['-create_time']
+        # ordering = ['-create_time']
     
     def __str__(self):
         return self.title
