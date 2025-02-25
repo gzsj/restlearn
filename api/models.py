@@ -3,8 +3,8 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 class Time(models.Model):
-    create_time = models.DateTimeField(auto_now_add=True)
-    update_time = models.DateTimeField(auto_now=True)
+    create_time = models.DateTimeField(auto_now_add=True,verbose_name='创建时间')
+    update_time = models.DateTimeField(auto_now=True,verbose_name='更新时间')
 
     class Meta:
         abstract = True #设置为抽象基类
@@ -12,9 +12,15 @@ class Time(models.Model):
 
     def __str__(self):
         return self.time
+class types(models.Model):
+    name = models.CharField(max_length=255,verbose_name='类型名称',null = False)
+    order = models.IntegerField(verbose_name='排序',default=0,null=False)
 
+    class Meta:
+        db_table = 'types'
+        verbose_name = '类型'
 class Movie(Time):
-    types = models.IntegerField(verbose_name='类型',null = False)
+    types = models.ForeignKey(types,on_delete=models.CASCADE,verbose_name='类型',null = False)
     title = models.CharField(max_length=255,verbose_name='标题',null = False)
     year = models.IntegerField(verbose_name='年份')
     language = models.CharField(max_length=255,verbose_name='语言')
@@ -25,7 +31,7 @@ class Movie(Time):
     actors = models.CharField(max_length=255,verbose_name='演员')
     directors = models.CharField(max_length=255,verbose_name='导演')
     country = models.CharField(max_length=255,verbose_name='国家')
-
+    
     class Meta:
         db_table = 'movie'
         verbose_name = '电影'
@@ -57,7 +63,6 @@ class Urls(Time):
     ]
     movie_id = models.ForeignKey(Movie, on_delete=models.CASCADE,verbose_name='电影ID',null = False)
     url = models.CharField(max_length=255,verbose_name='链接',null = False)
-    url_type = models.IntegerField(verbose_name='链接类型',null = False)
     category = models.ForeignKey(Category, on_delete=models.DO_NOTHING,verbose_name='分类',null = False)
     status = models.IntegerField(verbose_name='状态',choices=status_choices,default=1)
 
@@ -76,7 +81,9 @@ class Banner(Time):
         (1,'有效'),
     ]
     movie_id = models.ForeignKey(Movie,on_delete = models.CASCADE,verbose_name='电影ID',null = False)
+    poster = models.CharField(max_length=255,verbose_name='海报', default='')
     status = models.IntegerField(verbose_name='状态',choices=status_choices,default=1)
+    order = models.IntegerField(verbose_name='排序',default=0,null=False)
 
     class Meta:
         db_table = 'banner'

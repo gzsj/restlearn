@@ -1,10 +1,22 @@
 from rest_framework import serializers
-from .models import Movie, Category, Urls, Banner
+from .models import Movie, Category, Urls, Banner, types
 
-class MoveSerializer(serializers.ModelSerializer):
+class TypesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = types
+        fields = '__all__'
+
+class MovieSerializer(serializers.ModelSerializer):
+    types = TypesSerializer()
     class Meta:
         model = Movie
-        fields = '__all__'
+        fields = ['types', 'title', 'poster', 'description']
+
+#专属于url movie关联的序列化
+class UrlsMovieSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Movie
+        fields = ['id','title']
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -12,11 +24,15 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class UrlsSerializer(serializers.ModelSerializer):
+    movie = UrlsMovieSerializer(source='movie_id')
+    
     class Meta:
         model = Urls
-        fields = '__all__'
+        fields = ['movie','url','category','status']
+        # depth = 1
 
 class BannerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Banner
         fields = '__all__'
+        depth = 1
