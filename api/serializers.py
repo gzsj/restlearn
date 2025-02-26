@@ -7,10 +7,12 @@ class TypesSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class MovieSerializer(serializers.ModelSerializer):
-    types = TypesSerializer()
+    # types = TypesSerializer()
     class Meta:
         model = Movie
         fields = ['id','types', 'title', 'poster', 'description']
+
+
 
 #专属于url movie关联的序列化
 class UrlsMovieSerializer(serializers.ModelSerializer):
